@@ -134,7 +134,6 @@ function postfix(Q) {
     for (let i = 0; i < Q.length; i++) {
         const token = Q[i]
 
-        console.log(token);
 
         if (!"+-*/()".includes(token))
             P.push(token)
@@ -146,7 +145,7 @@ function postfix(Q) {
             // ?While (the stack is not empty AND the top item is not a left parenthesis)
 
             // ?Pop the stack and add the popped value to P
-            while (s.length != 0 && s[-1] != "(")
+            while (s.length != 0 && s.slice(-1) != "(")
                 P.push(s.pop())
 
             // ?Pop the left parenthesis from the stack and discard it
@@ -155,12 +154,12 @@ function postfix(Q) {
 
         else if ("+-*/".includes(token)) {
             // ?If (the stack is empty or if the top element is a left parenthesis)
-            if ((s.length == 0) || (s[-1] == "("))
+            if ((s.length == 0) || (s.slice(-1) == "("))
                 s.push(token)
 
             else {
 
-                while ((s.length != 0) && (s[-1] != "(") && (precedence[token] <= precedence[s[-1]]))
+                while ((s.length != 0) && (s.slice(-1) != "(") && (precedence[token] <= precedence[s.slice(-1)]))
                     P.push(s.pop())
 
                 // ?Push the latest operator onto the stack
@@ -172,7 +171,7 @@ function postfix(Q) {
 
     // ?Pop the stack and add the popped value to P
     while (s.length != 0)
-        P.push(s.pop())image.png
+        P.push(s.pop())
 
     return P
 }
@@ -181,7 +180,6 @@ function postfix(Q) {
 function evaluate(P) {
 
     const s = []
-
 
     for (let i = 0; i < P.length; i++) {
         const val = P[i];

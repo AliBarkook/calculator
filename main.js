@@ -16,8 +16,11 @@ function getExpression() {
             postfix_reslut += token_postfix[i]
             
         }
-            
+         
         alert(`postfix:\n ${postfix_reslut}`)
+
+        result = evaluate(token_postfix)
+        alert(`Result:\n ${result}`)
     
     }
 }
@@ -99,7 +102,7 @@ function validator(exp) {
         break
         
     }
-    
+
     // ? if we have too many opening parentheses
     if (!error && pLevel != 0) {
         errorPos = parts.length
@@ -130,6 +133,8 @@ function postfix(Q) {
 
     for (let i = 0; i < Q.length; i++) {
         const token = Q[i]
+
+        console.log(token);
 
         if (!"+-*/()".includes(token))
             P.push(token)
@@ -164,9 +169,47 @@ function postfix(Q) {
         }
     }
 
+
     // ?Pop the stack and add the popped value to P
     while (s.length != 0)
-        P.push(s.pop())
+        P.push(s.pop())image.png
 
     return P
+}
+
+
+function evaluate(P) {
+
+    const s = []
+
+
+    for (let i = 0; i < P.length; i++) {
+        const val = P[i];
+        
+        // ? If an operand is found
+        if (!"+-*/".includes(val))
+            s.push(val)
+
+        // ? If an operator is found
+        else if ("+-*/".includes(val)) {
+            // ? Pop the stack and call the value A
+            A = s.pop()
+            // ? Pop the stack and call the value B
+            B = s.pop()
+            // ? Evaluate B op A using the operator just found.
+            if (val == "+")
+                s.push((+B) + (+A))
+            else if (val == "-")
+                s.push((+B) - (+A))
+            else if (val == "*")
+                s.push((+B) * (+A))
+            else if (val == "/")
+                s.push((+B) / (+A))
+            // ? Push the resulting value onto the stack
+        }
+    }
+
+    // ? Pop the stack (this is the final value)
+    return s.pop()
+    
 }

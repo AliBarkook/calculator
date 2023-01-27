@@ -9,6 +9,16 @@ function getExpression() {
     alert(`token list:\n${token_list}`);
 
     if (validator(exp)) {
+        token_postfix = postfix(token_list)
+
+        postfix_reslut = ""
+        for (let i = 0; i < token_postfix.length; i++) {
+            postfix_reslut += token_postfix[i]
+            
+        }
+            
+        alert(`postfix:\n ${postfix_reslut}`)
+    
     }
 }
 
@@ -41,7 +51,6 @@ function tokenizer(exp) {
 
     return tokens 
 }
-
 
 function validator(exp) {
 
@@ -112,4 +121,52 @@ function validator(exp) {
     return true
 }
 
+const precedence = {'+':1, '-':1, '*':2, '/':2}    // ? precedence of operators
+
+function postfix(Q) {
     
+    let P = []
+    let s = []
+
+    for (let i = 0; i < Q.length; i++) {
+        const token = Q[i]
+
+        if (!"+-*/()".includes(token))
+            P.push(token)
+
+        else if (token == "(")
+            s.push(token)
+
+        else if (token == ")") {
+            // ?While (the stack is not empty AND the top item is not a left parenthesis)
+
+            // ?Pop the stack and add the popped value to P
+            while (s.length != 0 && s[-1] != "(")
+                P.push(s.pop())
+
+            // ?Pop the left parenthesis from the stack and discard it
+            s.pop()
+        }
+
+        else if ("+-*/".includes(token)) {
+            // ?If (the stack is empty or if the top element is a left parenthesis)
+            if ((s.length == 0) || (s[-1] == "("))
+                s.push(token)
+
+            else {
+
+                while ((s.length != 0) && (s[-1] != "(") && (precedence[token] <= precedence[s[-1]]))
+                    P.push(s.pop())
+
+                // ?Push the latest operator onto the stack
+                s.push(token)
+            }
+        }
+    }
+
+    // ?Pop the stack and add the popped value to P
+    while (s.length != 0)
+        P.push(s.pop())
+
+    return P
+}
